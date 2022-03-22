@@ -23,14 +23,31 @@ extern "C" {
 #include <stdint.h>
 
 /* Private defines -----------------------------------------------------------*/
+
 /* Exported types ------------------------------------------------------------*/
+typedef enum {
+    ZS040_STATUS_SUCCESS,
+    ZS040_STATUS_FAILURE,
+} ZS040_Status;
+
+typedef void (*ZS040_UserUartSendFunction)(const uint8_t* const data, 
+    const unsigned len, 
+    ZS040_Status *status);
+
+typedef void (*ZS040_UserUartReceiveFunction)(uint8_t* data, 
+    const unsigned len, 
+    unsigned timeout_ms,
+    ZS040_Status *status);
+
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-void ZS040_init(void);
-void ZS040_receive(uint8_t *data, unsigned *len);
-void ZS040_send(const uint8_t *data, const unsigned len);
+void ZS040_init(ZS040_UserUartSendFunction uart_send, 
+    ZS040_UserUartReceiveFunction uart_receive,
+    ZS040_Status *status);
+void ZS040_receive(uint8_t *data, unsigned max_len, unsigned timeout_ms, ZS040_Status *status);
+void ZS040_send(const uint8_t *data, const unsigned len, ZS040_Status *status);
 
 #ifdef __cplusplus
 }

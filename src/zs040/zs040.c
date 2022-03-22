@@ -12,34 +12,64 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdint.h>
+#include <stddef.h>
 #include "zs040/zs040.h"
-#include "stm32l4xx_hal.h"
-#include "mcu/uart/mcu_uart.h"
-#include "utils/error/error.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-#define ZS040_SEND_TIMEOUT_MS 1000U
-
 /* Private variables ---------------------------------------------------------*/
+static ZS040_UserUartSendFunction ZS040_uart_send = NULL;
+static ZS040_UserUartReceiveFunction ZS040_uart_receive = NULL;
+
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private user code ---------------------------------------------------------*/
-void ZS040_init(void)
+void ZS040_init(ZS040_UserUartSendFunction uart_send, 
+    ZS040_UserUartReceiveFunction uart_receive,
+    ZS040_Status *status)
 {
-    // TODO: check if MCU UART and DRIVERS are initialized
+    ZS040_Status m_status = ZS040_STATUS_SUCCESS;
+
+    if (uart_send == NULL || uart_receive == NULL) {
+        m_status = ZS040_STATUS_FAILURE;
+    }
+
+    if (m_status == ZS040_STATUS_SUCCESS) {
+        ZS040_uart_send = uart_send;
+        ZS040_uart_receive = uart_receive;
+    }
+
+    if (status != NULL) {
+        *status = m_status;
+    }
 }
 
-void ZS040_receive(uint8_t *data, unsigned *len)
+void ZS040_receive(uint8_t *data, unsigned max_len, unsigned timeout_ms, ZS040_Status *status)
 {
+    ZS040_Status m_status = ZS040_STATUS_SUCCESS;
 
+    if (ZS040_uart_receive != NULL && data != NULL) {
+        ZS040_uart_receive(data, max_len, timeout_ms, &m_status);
+    } else {
+        m_status = ZS040_STATUS_FAILURE;
+    }
+
+    if (status != NULL) {
+        *status = m_status;
+    }
 }
 
-void ZS040_send(const uint8_t *data, const unsigned len) {
-    HAL_StatusTypeDef hal_status = HAL_UART_Transmit(&huart1, 
-        (uint8_t *)data, 
-        len, 
-        ZS040_SEND_TIMEOUT_MS);
-    ERROR_assert(hal_status == HAL_OK);
+void ZS040_send(const uint8_t *data, const unsigned len, ZS040_Status *status) {
+    ZS040_Status m_status = ZS040_STATUS_SUCCESS;
+
+    if (ZS040_uart_send != NULL && data != NULL) {
+        ZS040_uart_send(data, len, &m_status);
+    } else {
+        m_status = ZS040_STATUS_FAILURE;
+    }
+
+    if (status != NULL) {
+        *status = m_status;
+    }
 }
