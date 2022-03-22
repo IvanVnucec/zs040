@@ -1,0 +1,39 @@
+name: linux
+
+on: [workflow_dispatch, push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create Build Environment
+      run: |
+        sudo apt-get install gcc-11 cmake
+        sudo apt-get update
+        sudo apt-get install locales-all
+        cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure
+      working-directory: ${{runner.workspace}}/build
+      env:
+        CC: gcc-11
+      run: |
+        cmake -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_STANDARD=99 \
+              -DCMAKE_C_VISIBILITY_PRESET=hidden -DCMAKE_VISIBILITY_INLINES_HIDDEN=ON \
+              $GITHUB_WORKSPACE
+
+    - name: Build
+      working-directory: ${{runner.workspace}}/build
+      run: |
+        threads=`nproc`
+        cmake --build . --config Debug --parallel $threads
+
+    - name: Test
+      working-directory: ${{runner.workspace}}/build
+      run: ctest -C Debug
+      env:
+        CTEST_OUTPUT_ON_FAILURE: True
