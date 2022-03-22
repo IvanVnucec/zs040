@@ -2,15 +2,19 @@ cmake_minimum_required(VERSION 3.15)
 
 set(namespace "zs040")
 project("zs040"
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "ZS040 library"
 )
 
-if (NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    message(STATUS "This project has a top-level one called [${CMAKE_PROJECT_NAME}]")
-else()
-    message(STATUS "This project is a top-level one")
-endif()
+# Determine if ZS040 is built as a subproject (using add_subdirectory)
+# or if it is the master project.
+if (NOT DEFINED ZS040_MASTER_PROJECT)
+    set(ZS040_MASTER_PROJECT OFF)
+    if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+        set(ZS040_MASTER_PROJECT ON)
+        message(STATUS "CMake version: ${CMAKE_VERSION}")
+    endif ()
+endif ()
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED OFF)
@@ -36,3 +40,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     # treat warnings as errors
     target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
 endif()
+
+option(ZS040_TEST "Generate the test target." ${ZS040_MASTER_PROJECT})
+
+if (ZS040_TEST)
+    enable_testing()
+    add_subdirectory(tests)
+endif ()
