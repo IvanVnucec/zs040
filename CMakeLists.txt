@@ -11,4 +11,4 @@ set(SOURCES
     example/main.c
 )
 
-add_executable(zs040 ${SOURCES})
+add_executable(zs040_example ${SOURCES})
