@@ -47,3 +47,7 @@ if (ZS040_TEST)
     enable_testing()
     add_subdirectory(tests)
 endif ()
+
+if (ZS040_MASTER_PROJECT)
+    add_subdirectory(example)
+endif ()
