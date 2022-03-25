@@ -1,0 +1,10 @@
+find_package(Doxygen)
+
+set(DOXYGEN_EXTRACT_ALL YES)
+set(DOXYGEN_BUILTIN_STL_SUPPORT YES)
+
+doxygen_add_docs(docs
+    "${PROJECT_SOURCE_DIR}/src"
+    "${PROJECT_SOURCE_DIR}/include"
+    ALL
+    COMMENT "Generate HTML documentation")

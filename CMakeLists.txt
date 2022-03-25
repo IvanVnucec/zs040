@@ -50,4 +50,5 @@ endif ()
 
 if (ZS040_MASTER_PROJECT)
     add_subdirectory(example)
+    add_subdirectory(docs)
 endif ()
