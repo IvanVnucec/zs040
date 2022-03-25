@@ -1,6 +1,6 @@
 BUILD_FOLDER = build
 
-.PHONY: all install_deps setup_cmake build clean
+.PHONY: all install_deps setup_cmake build test clean
 
 all: build
 
@@ -16,8 +16,11 @@ setup_cmake:
 build:
 	cd $(BUILD_FOLDER) && ninja
 
+test: build
+	cd $(BUILD_FOLDER) && ctest
+
 clean:
 	rm -rf $(BUILD_FOLDER)
 
 help:
-	@echo all install_deps setup_cmake build clean
+	@echo all install_deps setup_cmake build test clean
