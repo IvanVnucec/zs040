@@ -11,7 +11,7 @@ jobs:
 
     - name: Create Build Environment
       run: |
-        sudo apt-get install gcc-11 cmake
+        sudo apt-get install gcc-11 cmake doxygen
         sudo apt-get update
         sudo apt-get install locales-all
         cmake -E make_directory ${{runner.workspace}}/build
