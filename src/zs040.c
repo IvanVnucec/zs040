@@ -25,8 +25,8 @@ static ZS040_UserUartReceiveBlockingFunction ZS040_uart_receive_blocking = NULL;
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private user code ---------------------------------------------------------*/
-void ZS040_init(ZS040_UserUartSendBlockingFunction uart_send_blocking, 
-    ZS040_UserUartReceiveBlockingFunction uart_receive_blocking,
+void ZS040_init(const ZS040_UserUartSendBlockingFunction uart_send_blocking, 
+    const ZS040_UserUartReceiveBlockingFunction uart_receive_blocking,
     ZS040_Status *status)
 {
     ZS040_Status m_status = ZS040_STATUS_SUCCESS;
@@ -45,7 +45,10 @@ void ZS040_init(ZS040_UserUartSendBlockingFunction uart_send_blocking,
     }
 }
 
-void ZS040_receive_blocking(uint8_t *data, unsigned max_len, unsigned timeout_ms, ZS040_Status *status)
+void ZS040_receive_blocking(uint8_t *data, 
+    const unsigned max_len, 
+    const unsigned timeout_ms, 
+    ZS040_Status *status)
 {
     ZS040_Status m_status = ZS040_STATUS_SUCCESS;
 
@@ -60,11 +63,15 @@ void ZS040_receive_blocking(uint8_t *data, unsigned max_len, unsigned timeout_ms
     }
 }
 
-void ZS040_send_blocking(const uint8_t *data, const unsigned len, ZS040_Status *status) {
+void ZS040_send_blocking(const uint8_t *data, 
+    const unsigned len, 
+    const unsigned timeout_ms, 
+    ZS040_Status *status) 
+{
     ZS040_Status m_status = ZS040_STATUS_SUCCESS;
 
     if (ZS040_uart_send_blocking != NULL && data != NULL) {
-        ZS040_uart_send_blocking(data, len, &m_status);
+        ZS040_uart_send_blocking(data, len, timeout_ms, &m_status);
     } else {
         m_status = ZS040_STATUS_FAILURE;
     }

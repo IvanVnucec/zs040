@@ -32,6 +32,7 @@ typedef enum {
 
 typedef void (*ZS040_UserUartSendBlockingFunction)(const uint8_t* const data, 
     const unsigned len, 
+    unsigned timeout_ms,
     ZS040_Status *status);
 
 typedef void (*ZS040_UserUartReceiveBlockingFunction)(uint8_t* data, 
@@ -43,11 +44,17 @@ typedef void (*ZS040_UserUartReceiveBlockingFunction)(uint8_t* data,
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-void ZS040_init(ZS040_UserUartSendBlockingFunction uart_send_blocking, 
-    ZS040_UserUartReceiveBlockingFunction uart_receive_blocking,
+void ZS040_init(const ZS040_UserUartSendBlockingFunction uart_send_blocking, 
+    const ZS040_UserUartReceiveBlockingFunction uart_receive_blocking,
     ZS040_Status *status);
-void ZS040_receive_blocking(uint8_t *data, unsigned max_len, unsigned timeout_ms, ZS040_Status *status);
-void ZS040_send_blocking(const uint8_t *data, const unsigned len, ZS040_Status *status);
+void ZS040_receive_blocking(uint8_t *data, 
+    const unsigned max_len, 
+    const unsigned timeout_ms, 
+    ZS040_Status *status);
+void ZS040_send_blocking(const uint8_t *data, 
+    const unsigned len, 
+    const unsigned timeout_ms, 
+    ZS040_Status *status);
 
 #ifdef __cplusplus
 }

@@ -1,8 +1,12 @@
 #include "zs040/zs040.h"
 
 
+#define RECV_LEN (10)
+
+
 void user_uart_send_blocking_function(const uint8_t* const data, 
     const unsigned len, 
+    const unsigned timeout_ms,
     ZS040_Status *status)
 {
     // TODO
@@ -13,7 +17,7 @@ void user_uart_send_blocking_function(const uint8_t* const data,
 
 void user_uart_receive_blocking_function(uint8_t* data, 
     const unsigned len, 
-    unsigned timeout_ms, 
+    const unsigned timeout_ms, 
     ZS040_Status *status)
 {
     // TODO
@@ -25,13 +29,20 @@ void user_uart_receive_blocking_function(uint8_t* data,
 int main(void)
 {
     ZS040_Status status;
+    uint8_t recv_data[RECV_LEN] = {0};
+
     ZS040_init(user_uart_send_blocking_function, 
         user_uart_receive_blocking_function, 
         &status);
     
     if (status == ZS040_STATUS_SUCCESS) {
-        ZS040_send_blocking("hello world", sizeof("hello world"), &status);
+        ZS040_receive_blocking(recv_data, RECV_LEN, 100, &status);
     }
+
+    if (status == ZS040_STATUS_SUCCESS) {
+        ZS040_send_blocking("hello world", sizeof("hello world"), 100, &status);
+    }
+
     
     return 0;
 }
